@@ -1,5 +1,5 @@
 -- Products table
-CREATE TABLE products (
+CREATE TABLE IF NOT EXISTS products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     price REAL NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE products (
 );
 
 -- Cart table
-CREATE TABLE cart_items (
+CREATE TABLE IF NOT EXISTS cart_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     product_id INTEGER,
     qty INTEGER DEFAULT 1,
@@ -16,8 +16,19 @@ CREATE TABLE cart_items (
 );
 
 -- Orders table
-CREATE TABLE orders (
+CREATE TABLE IF NOT EXISTS orders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     total REAL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Order items table
+CREATE TABLE IF NOT EXISTS order_items (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id INTEGER,
+    product_id INTEGER,
+    product_name TEXT,
+    product_price REAL,
+    qty INTEGER,
+    FOREIGN KEY(order_id) REFERENCES orders(id)
 );
