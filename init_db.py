@@ -60,7 +60,6 @@ def init_db():
     if existing_products == 0:
         sample_products = [
             ('Laptop', 45000, 'High performance laptop', 'images/laptop.jpg'),
-            ('Headphones', 1200, 'Noise-cancelling', 'images/headphone.jpg'),
             ('Smartphone', 20000, 'Ultra charging', 'images/smartphone.jpg'),
             ('Mouse', 800, 'Wireless mouse', 'images/mouse.jpg'),
             ('Monitor', 12000, 'Full HD monitor', 'images/monitor.jpg'),
