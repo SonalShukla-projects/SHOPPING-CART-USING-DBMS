@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shopping Cart</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #0a1b2d; 
+            margin: 0; 
+            padding: 0; 
+            color: #fff;
+        }
+        .container { 
+            display: flex; 
+            max-width: 1200px; 
+            margin: 20px auto; 
+            gap: 40px; 
+        }
+        .products, .cart { 
+            background: #112d4e; 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 0 15px rgba(0,0,0,0.3); 
+        }
+        .products { flex: 2; }
+        .cart { flex: 1; }
+        h1, h2 { color: #f0f8ff; }
+        h1 { text-align: center; margin-bottom: 20px; }
+        ul { list-style: none; padding: 0; }
+        li { 
+            padding: 10px 0; 
+            border-bottom: 1px solid #1b263b; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .product-info, .cart-item-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .product-info img, .cart-item-info img {
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid #90e0ef;
+        }
+        a.button { 
+            text-decoration: none; 
+            background: #0077b6; 
+            color: #fff; 
+            padding: 5px 12px; 
+            border-radius: 5px; 
+        }
+        a.button:hover { background: #023e8a; }
+        .total { font-weight: bold; margin-top: 10px; color: #caf0f8; }
+        small { color: #ade8f4; }
+        .checkout-btn { margin-top: 15px; display: block; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Shopping Cart</h1>
+    <div class="container">
+        <!-- Products Section -->
+        <div class="products">
+            <h2>Products</h2>
+            <ul>
+                {% for product in products %}
+                <li>
+                    <div class="product-info">
+                        {% if product.image_url %}
+                        <img src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.name }}">
+                        {% endif %}
+                        <div>
+                            <strong>{{ product.name }}</strong> - ₹{{ product.price }}<br>
+                            <small>{{ product.description }}</small>
+                        </div>
+                    </div>
+                    <a class="button" href="{{ url_for('add_to_cart', product_id=product.id) }}">Add to Cart</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Cart Section -->
+        <div class="cart">
+            <h2>Your Cart</h2>
+            {% if cart_items %}
+            <ul>
+                {% for item in cart_items %}
+                <li>
+                    <div class="cart-item-info">
+                        {% if item.product.image_url %}
+                        <img src="{{ url_for('static', filename=item.product.image_url) }}" alt="{{ item.product.name }}">
+                        {% endif %}
+                        <div>
+                            {{ item.product.name }} - ₹{{ item.product.price }} x {{ item.qty }}
+                        </div>
+                    </div>
+                    <a class="button" href="{{ url_for('remove_item', item_id=item.id) }}">Remove</a>
+                </li>
+                {% endfor %}
+            </ul>
+            <div class="total">Total: ₹{{ total }}</div>
+            <a class="button checkout-btn" href="{{ url_for('checkout') }}">Checkout</a>
+            {% else %}
+            <p>Your cart is empty!</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
