@@ -26,6 +26,7 @@ def init_db():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         product_id INTEGER,
         qty INTEGER DEFAULT 1,
+        user_id INTEGER DEFAULT 1,
         FOREIGN KEY(product_id) REFERENCES products(id)
     )
     """)
@@ -49,22 +50,20 @@ def init_db():
     )
     """)
 
-    # ------------------ Fix old cart_items table ------------------
-    # Add user_id column if it does not exist
-    columns = [col['name'] for col in conn.execute('PRAGMA table_info(cart_items)').fetchall()]
-    if 'user_id' not in columns:
-        conn.execute('ALTER TABLE cart_items ADD COLUMN user_id INTEGER DEFAULT 1')
+    # ------------------ Remove old 'Headphone' entries ------------------
+    conn.execute("DELETE FROM products WHERE name = 'Headphone'")
 
-    # Check if products exist
+    # ------------------ Insert sample products if table is empty ------------------
     existing_products = conn.execute("SELECT COUNT(*) FROM products").fetchone()[0]
     if existing_products == 0:
         sample_products = [
-            ('Laptop', 45000, 'High performance laptop', 'images/laptop.jpg'),
-            ('Smartphone', 20000, 'Ultra charging', 'images/smartphone.jpg'),
-            ('Mouse', 800, 'Wireless mouse', 'images/mouse.jpg'),
-            ('Monitor', 12000, 'Full HD monitor', 'images/monitor.jpg'),
-            ('Smartwatch', 5000, 'Heart rate detector', 'images/smartwatch.jpg')
+            ('Laptop', 45000, 'High performance laptop', "images/laptop.jpg"),
+            ('Smartphone', 20000, 'Ultra charging', "images/smartphone.jpg"),
+            ('Mouse', 800, 'Wireless mouse', "images/mouse.jpg"),
+            ('Monitor', 12000, 'Full HD monitor', "images/monitor.jpg"),
+            ('Smartwatch', 5000, 'Heart rate detector', "images/smartwatch.jpg")
         ]
+
         conn.executemany(
             'INSERT INTO products (name, price, description, image_url) VALUES (?, ?, ?, ?)',
             sample_products
